@@ -40,11 +40,16 @@ public class MapEngine {
     MessageCli.INSERT_COUNTRY.printMessage();
     String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
 
-    Country validCountry = countryMap.get(input);
-    MessageCli.COUNTRY_INFO.printMessage(
-        validCountry.getCountryName(),
-        validCountry.getCountryContinent(),
-        String.valueOf(validCountry.getCountryCrossBorderTax()));
+    if (countryMap.containsKey(input)) {
+      Country validCountry = countryMap.get(input);
+      MessageCli.COUNTRY_INFO.printMessage(
+          validCountry.getCountryName(),
+          validCountry.getCountryContinent(),
+          String.valueOf(validCountry.getCountryCrossBorderTax()));
+    } else {
+      MessageCli.INVALID_COUNTRY.printMessage(input);
+      showInfoCountry();
+    }
   }
 
   /** this method is invoked when the user run the command route. */
