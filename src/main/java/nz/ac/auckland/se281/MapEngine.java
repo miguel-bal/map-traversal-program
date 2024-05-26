@@ -37,18 +37,43 @@ public class MapEngine {
 
   /** this method is invoked when the user run the command info-country. */
   public void showInfoCountry() {
-    MessageCli.INSERT_COUNTRY.printMessage();
-    String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+    String input;
+    boolean isValid = false;
 
-    if (countryMap.containsKey(input)) {
-      Country validCountry = countryMap.get(input);
-      MessageCli.COUNTRY_INFO.printMessage(
-          validCountry.getCountryName(),
-          validCountry.getCountryContinent(),
-          String.valueOf(validCountry.getCountryCrossBorderTax()));
+    MessageCli.INSERT_COUNTRY.printMessage();
+
+    do {
+      input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+      try {
+        isValidInput(input);
+        isValid = true;
+      } catch (IncorrectCountryNameException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(input);
+      }
+    } while (!isValid);
+
+    //////////////////////////
+    // String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+
+    // while (!countryMap.containsKey(input)) {
+    //   MessageCli.INVALID_COUNTRY.printMessage(input);
+    //   input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+    // }
+    //////////////////////////
+
+    Country validCountry = countryMap.get(input);
+
+    MessageCli.COUNTRY_INFO.printMessage(
+        validCountry.getCountryName(),
+        validCountry.getCountryContinent(),
+        String.valueOf(validCountry.getCountryCrossBorderTax()));
+  }
+
+  public String isValidInput(String input) throws IncorrectCountryNameException {
+    if (!countryMap.containsKey(input)) {
+      throw new IncorrectCountryNameException("Invalid country name.");
     } else {
-      MessageCli.INVALID_COUNTRY.printMessage(input);
-      showInfoCountry();
+      return input;
     }
   }
 
