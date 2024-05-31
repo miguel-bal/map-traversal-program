@@ -102,25 +102,6 @@ public class MapEngine {
     return countryMap.get(input); // change to adjacency map to get adjacent countries
   }
 
-  // /** this method is invoked when the user has to input a country name. */
-  // public List<String> getAdjacencies() {
-
-  //   //
-  //   String input;
-  //   boolean isValid = false;
-  //   do {
-  //     input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
-  //     try {
-  //       isValidInput(input);
-  //       isValid = true;
-  //     } catch (IncorrectCountryNameException e) {
-  //       MessageCli.INVALID_COUNTRY.printMessage(input);
-  //     }
-  //   } while (!isValid);
-
-  //   return adjacencyMap.get(input);
-  // }
-
   /** this method is invoked when looking to validate the user's input for a country name. */
   public String isValidInput(String input) throws IncorrectCountryNameException {
     if (!countryMap.containsKey(input)) {
