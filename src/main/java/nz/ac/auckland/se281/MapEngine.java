@@ -5,8 +5,8 @@ import java.util.*;
 /** This class is the main entry point. */
 public class MapEngine {
 
-  public Map<String, Country> countryMap = new HashMap<>();
-  public Map<String, List<String>> adjacencyMap = new HashMap<>();
+  private Map<String, Country> countryMap = new HashMap<>();
+  private Map<String, List<String>> adjacencyMap = new HashMap<>();
 
   public MapEngine() {
     // add other code here if you want
@@ -200,7 +200,6 @@ public class MapEngine {
       totalTax += countryMap.get(country).getCountryCrossBorderTax();
     }
 
-    // Return total tax
     return totalTax;
   }
 
@@ -226,7 +225,6 @@ public class MapEngine {
       }
     }
 
-    // Return continent path
     return continentPath;
   }
 }

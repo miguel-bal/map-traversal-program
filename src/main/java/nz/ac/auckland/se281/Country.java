@@ -10,9 +10,9 @@ public class Country {
    * Constructs a new country instance with the country name, country continent, and country
    * cross-border tax.
    *
-   * @param countryName
-   * @param countryContinent
-   * @param countryCrossBorderTax
+   * @param countryName the name of the country
+   * @param countryContinent the continent of the country
+   * @param countryCrossBorderTax the cross-border tax of the country
    */
   public Country(String countryName, String countryContinent, int countryCrossBorderTax) {
     this.countryName = countryName;
