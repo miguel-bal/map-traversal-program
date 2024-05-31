@@ -82,6 +82,7 @@ public class MapEngine {
         findShortestPath(sourceCountry.getCountryName(), destinationCountry.getCountryName());
 
     MessageCli.ROUTE_INFO.printMessage(initialPath.toString());
+    MessageCli.CONTINENT_INFO.printMessage(continentPath(initialPath).toString());
   }
 
   /** this method is invoked when the user has to input a country name. */
@@ -179,11 +180,11 @@ public class MapEngine {
   //   return totalTax;
   // }
 
-  // public List<String> continentPath(List<String> path) {
-  //   List<String> continentPath = new ArrayList<>();
-  //   for (String country : path) {
-  //     continentPath.add(countryMap.get(country).getCountryContinent());
-  //   }
-  //   return continentPath;
-  // }
+  public List<String> continentPath(List<String> path) {
+    List<String> continentPath = new ArrayList<>();
+    for (String country : path) {
+      continentPath.add(countryMap.get(country).getCountryContinent());
+    }
+    return continentPath;
+  }
 }
