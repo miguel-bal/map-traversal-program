@@ -5,10 +5,8 @@ import java.util.*;
 /** This class is the main entry point. */
 public class MapEngine {
 
-  Map<String, Country> countryMap = new HashMap<>();
-  Map<String, List<String>> adjacencyMap = new HashMap<>();
-
-  // CountryGraph fullCountryMap = new CountryGraph();
+  public Map<String, Country> countryMap = new HashMap<>();
+  public Map<String, List<String>> adjacencyMap = new HashMap<>();
 
   public MapEngine() {
     // add other code here if you want
@@ -82,7 +80,7 @@ public class MapEngine {
       List<String> initialPath =
           findShortestPath(sourceCountry.getCountryName(), destinationCountry.getCountryName());
       MessageCli.ROUTE_INFO.printMessage(initialPath.toString());
-      MessageCli.CONTINENT_INFO.printMessage(continentPath(initialPath).toString());
+      MessageCli.CONTINENT_INFO.printMessage(findContinentPath(initialPath).toString());
       MessageCli.TAX_INFO.printMessage(Integer.toString(totalCrossBorderTax(initialPath)));
     }
   }
@@ -132,15 +130,15 @@ public class MapEngine {
     }
   }
 
-  /** this method is invoked to find the path between two countries */
+  /** this method is invoked to find the path between two countries. */
   public List<String> findShortestPath(String sourceCountry, String destinationCountry) {
 
-    // Initialise visited and queue
+    // Initialise visited, queue and parent
     List<String> visited = new ArrayList<>();
     Queue<String> queue = new LinkedList<>();
     Map<String, String> parent = new HashMap<>();
 
-    // Add source country to queue and visited
+    // Add source country to queue, visited and parent
     queue.add(sourceCountry);
     visited.add(sourceCountry);
     parent.put(sourceCountry, null);
@@ -150,21 +148,28 @@ public class MapEngine {
       // Remove first element from queue and store as country
       String country = queue.poll();
 
+      // Check if country is the destination country
       if (country.equals(destinationCountry)) {
+
+        // Create new array list for route
         List<String> route = new ArrayList<>();
+
+        // Add countries to route while country is not null
         while (country != null) {
           route.add(country);
           country = parent.get(country);
         }
+
+        // Reverse the route and return
         Collections.reverse(route);
         return route;
       }
 
+      // For every adjacent country in the adjacency list
       for (String c : adjacencyMap.get(country)) {
         if (!parent.containsKey(c)) {
 
-          // For every adjacent country in the adjacency list
-          // Add to visited and queue if not in visited
+          // Add to visited, queue and parent if not in visited
           visited.add(c);
           queue.add(c);
           parent.put(c, country);
@@ -174,28 +179,54 @@ public class MapEngine {
     return null;
   }
 
+  /**
+   * this method is invoked to find the cross border tax sum from country to country excluding
+   * source country.
+   */
   public int totalCrossBorderTax(List<String> path) {
+
+    // Initialise total tax and i
     int totalTax = 0;
     int i = 0;
     for (String country : path) {
+
+      // Skip the first country
       if (i == 0) {
         i++;
         continue;
       }
+
+      // Add the cross border tax of the country to the total tax
       totalTax += countryMap.get(country).getCountryCrossBorderTax();
     }
+
+    // Return total tax
     return totalTax;
   }
 
-  public List<String> continentPath(List<String> path) {
+  /**
+   * this method is invoked to find the continent path between two countries excluding any
+   * duplicates.
+   */
+  public List<String> findContinentPath(List<String> path) {
+
+    // Create new array list for continent path
     List<String> continentPath = new ArrayList<>();
     for (String country : path) {
+
+      // Check if continent path contains the country continent
       if (continentPath.contains(countryMap.get(country).getCountryContinent())) {
+
+        // Do not store the current continent
         continue;
       } else {
+
+        // Store continent of that country in continent path
         continentPath.add(countryMap.get(country).getCountryContinent());
       }
     }
+
+    // Return continent path
     return continentPath;
   }
 }

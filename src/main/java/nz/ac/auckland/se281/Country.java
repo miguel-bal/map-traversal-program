@@ -1,10 +1,19 @@
 package nz.ac.auckland.se281;
 
+/** Represents a country with its name, continent, and cross-border tax. */
 public class Country {
-  public String countryName;
-  public String countryContinent;
-  public int countryCrossBorderTax;
+  private String countryName;
+  private String countryContinent;
+  private int countryCrossBorderTax;
 
+  /**
+   * Constructs a new country instance with the country name, country continent, and country
+   * cross-border tax.
+   *
+   * @param countryName
+   * @param countryContinent
+   * @param countryCrossBorderTax
+   */
   public Country(String countryName, String countryContinent, int countryCrossBorderTax) {
     this.countryName = countryName;
     this.countryContinent = countryContinent;
