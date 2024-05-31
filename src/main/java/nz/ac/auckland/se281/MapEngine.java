@@ -81,12 +81,7 @@ public class MapEngine {
     List<String> initialPath =
         findShortestPath(sourceCountry.getCountryName(), destinationCountry.getCountryName());
 
-    System.out.println(initialPath);
-
-    // List<String> reversePath =
-    //     reverseInitialPath(
-    //         sourceCountry.getCountryName(), destinationCountry.getCountryName(), initialPath);
-    // System.out.println(reversePath);
+    MessageCli.ROUTE_INFO.printMessage(initialPath.toString());
   }
 
   /** this method is invoked when the user has to input a country name. */
@@ -140,52 +135,55 @@ public class MapEngine {
     // Initialise visited and queue
     List<String> visited = new ArrayList<>();
     Queue<String> queue = new LinkedList<>();
+    Map<String, String> parent = new HashMap<>();
 
     // Add source country to queue and visited
     queue.add(sourceCountry);
     visited.add(sourceCountry);
+    parent.put(sourceCountry, null);
+
     while (!queue.isEmpty()) {
 
       // Remove first element from queue and store as country
       String country = queue.poll();
+
+      if (country.equals(destinationCountry)) {
+        List<String> route = new ArrayList<>();
+        while (country != null) {
+          route.add(country);
+          country = parent.get(country);
+        }
+        Collections.reverse(route);
+        return route;
+      }
+
       for (String c : adjacencyMap.get(country)) {
-        if (!visited.contains(c)) {
+        if (!parent.containsKey(c)) {
 
           // For every adjacent country in the adjacency list
           // Add to visited and queue if not in visited
           visited.add(c);
           queue.add(c);
-          if (visited.contains(destinationCountry)) {
-
-            // If destination country in visited return visited
-            return visited;
-          }
+          parent.put(c, country);
         }
       }
     }
     return null;
   }
 
-  /** this method is invoked to find the sole path taken between two countries */
-  public List<String> reverseInitialPath(
-      String sourceCountry, String destinationCountry, List<String> path) {
-    List<String> visited = new ArrayList<>();
-    Stack<String> stack = new Stack<>();
-    stack.push(destinationCountry);
-    while (!stack.isEmpty()) {
-      String country = stack.pop();
-      if (!visited.contains(country)) {
-        visited.add(country);
-        for (String c : adjacencyMap.get(country)) {
-          stack.push(c);
-        }
-        if (visited.contains(sourceCountry)) {
-          return visited;
-        } else {
-          visited.clear();
-        }
-      }
-    }
-    return visited;
-  }
+  // public int totalCrossBorderTax(List<String> path) {
+  //   int totalTax = 0;
+  //   for (String country : path) {
+  //     totalTax += countryMap.get(country).getCountryCrossBorderTax();
+  //   }
+  //   return totalTax;
+  // }
+
+  // public List<String> continentPath(List<String> path) {
+  //   List<String> continentPath = new ArrayList<>();
+  //   for (String country : path) {
+  //     continentPath.add(countryMap.get(country).getCountryContinent());
+  //   }
+  //   return continentPath;
+  // }
 }
