@@ -102,24 +102,24 @@ public class MapEngine {
     return countryMap.get(input); // change to adjacency map to get adjacent countries
   }
 
-  /** this method is invoked when the user has to input a country name. */
-  public List<String> getAdjacencies() {
+  // /** this method is invoked when the user has to input a country name. */
+  // public List<String> getAdjacencies() {
 
-    //
-    String input;
-    boolean isValid = false;
-    do {
-      input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
-      try {
-        isValidInput(input);
-        isValid = true;
-      } catch (IncorrectCountryNameException e) {
-        MessageCli.INVALID_COUNTRY.printMessage(input);
-      }
-    } while (!isValid);
+  //   //
+  //   String input;
+  //   boolean isValid = false;
+  //   do {
+  //     input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+  //     try {
+  //       isValidInput(input);
+  //       isValid = true;
+  //     } catch (IncorrectCountryNameException e) {
+  //       MessageCli.INVALID_COUNTRY.printMessage(input);
+  //     }
+  //   } while (!isValid);
 
-    return adjacencyMap.get(input);
-  }
+  //   return adjacencyMap.get(input);
+  // }
 
   /** this method is invoked when looking to validate the user's input for a country name. */
   public String isValidInput(String input) throws IncorrectCountryNameException {
@@ -207,10 +207,10 @@ public class MapEngine {
    * this method is invoked to find the continent path between two countries excluding any
    * duplicates.
    */
-  public HashSet<String> findContinentPath(List<String> path) {
+  public Set<String> findContinentPath(List<String> path) {
 
     // Create new array list for continent path
-    HashSet<String> continentPath = new HashSet<>();
+    Set<String> continentPath = new LinkedHashSet<>();
     for (String country : path) {
 
       // Add the continent of the country to the continent path
