@@ -207,22 +207,14 @@ public class MapEngine {
    * this method is invoked to find the continent path between two countries excluding any
    * duplicates.
    */
-  public List<String> findContinentPath(List<String> path) {
+  public HashSet<String> findContinentPath(List<String> path) {
 
     // Create new array list for continent path
-    List<String> continentPath = new ArrayList<>();
+    HashSet<String> continentPath = new HashSet<>();
     for (String country : path) {
 
-      // Check if continent path contains the country continent
-      if (continentPath.contains(countryMap.get(country).getCountryContinent())) {
-
-        // Do not store the current continent
-        continue;
-      } else {
-
-        // Store continent of that country in continent path
-        continentPath.add(countryMap.get(country).getCountryContinent());
-      }
+      // Add the continent of the country to the continent path
+      continentPath.add(countryMap.get(country).getCountryContinent());
     }
 
     return continentPath;
