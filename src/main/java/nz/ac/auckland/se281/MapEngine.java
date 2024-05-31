@@ -1,13 +1,14 @@
 package nz.ac.auckland.se281;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** This class is the main entry point. */
 public class MapEngine {
 
   Map<String, Country> countryMap = new HashMap<>();
+  Map<String, List<String>> adjacencyMap = new HashMap<>();
+
+  // CountryGraph fullCountryMap = new CountryGraph();
 
   public MapEngine() {
     // add other code here if you want
@@ -19,11 +20,10 @@ public class MapEngine {
     List<String> countries = Utils.readCountries();
     List<String> adjacencies = Utils.readAdjacencies();
 
-    // // add code here to create your data structures
+    // add code here to create your data structures
 
-    // // Data structure for countries
+    // Data structure for countries
     for (String country : countries) {
-
       String[] countryInfo = country.split(",");
       String countryName = countryInfo[0];
       String continent = countryInfo[1];
@@ -33,15 +33,66 @@ public class MapEngine {
 
       countryMap.put(countryName, newCountry);
     }
+
+    // Data structure for adjacencies
+    for (String adjacency : adjacencies) {
+      List<String> adjacentCountries = new LinkedList<>();
+
+      String[] adjacencyInfo = adjacency.split(",");
+      String countryName = adjacencyInfo[0];
+
+      for (int i = 1; i < adjacencyInfo.length; i++) {
+        adjacentCountries.add(adjacencyInfo[i]);
+      }
+
+      adjacencyMap.put(countryName, adjacentCountries);
+    }
   }
 
   /** this method is invoked when the user run the command info-country. */
   public void showInfoCountry() {
-    String input;
-    boolean isValid = false;
 
+    // Ask for country
     MessageCli.INSERT_COUNTRY.printMessage();
 
+    // Store country
+    Country validCountry = askCountry();
+
+    // Display country information
+    MessageCli.COUNTRY_INFO.printMessage(
+        validCountry.getCountryName(),
+        validCountry.getCountryContinent(),
+        String.valueOf(validCountry.getCountryCrossBorderTax()));
+  }
+
+  /** this method is invoked when the user run the command route. */
+  public void showRoute() {
+
+    // Ask for start country
+    MessageCli.INSERT_SOURCE.printMessage();
+    Country sourceCountry = askCountry();
+
+    // Ask for end country
+    MessageCli.INSERT_DESTINATION.printMessage();
+    Country destinationCountry = askCountry();
+
+    // List<String> sourceCountryAdjacencies = adjacencyMap.get(sourceCountry.getCountryName());
+
+    List<String> initialPath =
+        findShortestPath(sourceCountry.getCountryName(), destinationCountry.getCountryName());
+
+    System.out.println(initialPath);
+
+    // List<String> reversePath =
+    //     reverseInitialPath(
+    //         sourceCountry.getCountryName(), destinationCountry.getCountryName(), initialPath);
+    // System.out.println(reversePath);
+  }
+
+  /** this method is invoked when the user has to input a country name. */
+  public Country askCountry() {
+    String input;
+    boolean isValid = false;
     do {
       input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
       try {
@@ -52,23 +103,29 @@ public class MapEngine {
       }
     } while (!isValid);
 
-    //////////////////////////
-    // String input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
-
-    // while (!countryMap.containsKey(input)) {
-    //   MessageCli.INVALID_COUNTRY.printMessage(input);
-    //   input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
-    // }
-    //////////////////////////
-
-    Country validCountry = countryMap.get(input);
-
-    MessageCli.COUNTRY_INFO.printMessage(
-        validCountry.getCountryName(),
-        validCountry.getCountryContinent(),
-        String.valueOf(validCountry.getCountryCrossBorderTax()));
+    return countryMap.get(input); // change to adjacency map to get adjacent countries
   }
 
+  /** this method is invoked when the user has to input a country name. */
+  public List<String> getAdjacencies() {
+
+    //
+    String input;
+    boolean isValid = false;
+    do {
+      input = Utils.capitalizeFirstLetterOfEachWord(Utils.scanner.nextLine());
+      try {
+        isValidInput(input);
+        isValid = true;
+      } catch (IncorrectCountryNameException e) {
+        MessageCli.INVALID_COUNTRY.printMessage(input);
+      }
+    } while (!isValid);
+
+    return adjacencyMap.get(input);
+  }
+
+  /** this method is invoked when looking to validate the user's input for a country name. */
   public String isValidInput(String input) throws IncorrectCountryNameException {
     if (!countryMap.containsKey(input)) {
       throw new IncorrectCountryNameException("Invalid country name.");
@@ -77,6 +134,58 @@ public class MapEngine {
     }
   }
 
-  /** this method is invoked when the user run the command route. */
-  public void showRoute() {}
+  /** this method is invoked to find the path between two countries */
+  public List<String> findShortestPath(String sourceCountry, String destinationCountry) {
+
+    // Initialise visited and queue
+    List<String> visited = new ArrayList<>();
+    Queue<String> queue = new LinkedList<>();
+
+    // Add source country to queue and visited
+    queue.add(sourceCountry);
+    visited.add(sourceCountry);
+    while (!queue.isEmpty()) {
+
+      // Remove first element from queue and store as country
+      String country = queue.poll();
+      for (String c : adjacencyMap.get(country)) {
+        if (!visited.contains(c)) {
+
+          // For every adjacent country in the adjacency list
+          // Add to visited and queue if not in visited
+          visited.add(c);
+          queue.add(c);
+          if (visited.contains(destinationCountry)) {
+
+            // If destination country in visited return visited
+            return visited;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /** this method is invoked to find the sole path taken between two countries */
+  public List<String> reverseInitialPath(
+      String sourceCountry, String destinationCountry, List<String> path) {
+    List<String> visited = new ArrayList<>();
+    Stack<String> stack = new Stack<>();
+    stack.push(destinationCountry);
+    while (!stack.isEmpty()) {
+      String country = stack.pop();
+      if (!visited.contains(country)) {
+        visited.add(country);
+        for (String c : adjacencyMap.get(country)) {
+          stack.push(c);
+        }
+        if (visited.contains(sourceCountry)) {
+          return visited;
+        } else {
+          visited.clear();
+        }
+      }
+    }
+    return visited;
+  }
 }
