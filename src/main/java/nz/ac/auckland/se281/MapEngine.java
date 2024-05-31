@@ -83,6 +83,7 @@ public class MapEngine {
 
     MessageCli.ROUTE_INFO.printMessage(initialPath.toString());
     MessageCli.CONTINENT_INFO.printMessage(continentPath(initialPath).toString());
+    MessageCli.TAX_INFO.printMessage(Integer.toString(totalCrossBorderTax(initialPath)));
   }
 
   /** this method is invoked when the user has to input a country name. */
@@ -172,13 +173,18 @@ public class MapEngine {
     return null;
   }
 
-  // public int totalCrossBorderTax(List<String> path) {
-  //   int totalTax = 0;
-  //   for (String country : path) {
-  //     totalTax += countryMap.get(country).getCountryCrossBorderTax();
-  //   }
-  //   return totalTax;
-  // }
+  public int totalCrossBorderTax(List<String> path) {
+    int totalTax = 0;
+    int i = 0;
+    for (String country : path) {
+      if (i == 0) {
+        i++;
+        continue;
+      }
+      totalTax += countryMap.get(country).getCountryCrossBorderTax();
+    }
+    return totalTax;
+  }
 
   public List<String> continentPath(List<String> path) {
     List<String> continentPath = new ArrayList<>();
