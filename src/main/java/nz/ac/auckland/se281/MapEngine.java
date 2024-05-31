@@ -76,14 +76,15 @@ public class MapEngine {
     MessageCli.INSERT_DESTINATION.printMessage();
     Country destinationCountry = askCountry();
 
-    // List<String> sourceCountryAdjacencies = adjacencyMap.get(sourceCountry.getCountryName());
-
-    List<String> initialPath =
-        findShortestPath(sourceCountry.getCountryName(), destinationCountry.getCountryName());
-
-    MessageCli.ROUTE_INFO.printMessage(initialPath.toString());
-    MessageCli.CONTINENT_INFO.printMessage(continentPath(initialPath).toString());
-    MessageCli.TAX_INFO.printMessage(Integer.toString(totalCrossBorderTax(initialPath)));
+    if (sourceCountry.getCountryName().equals(destinationCountry.getCountryName())) {
+      MessageCli.NO_CROSSBORDER_TRAVEL.printMessage();
+    } else {
+      List<String> initialPath =
+          findShortestPath(sourceCountry.getCountryName(), destinationCountry.getCountryName());
+      MessageCli.ROUTE_INFO.printMessage(initialPath.toString());
+      MessageCli.CONTINENT_INFO.printMessage(continentPath(initialPath).toString());
+      MessageCli.TAX_INFO.printMessage(Integer.toString(totalCrossBorderTax(initialPath)));
+    }
   }
 
   /** this method is invoked when the user has to input a country name. */
