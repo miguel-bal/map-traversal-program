@@ -183,7 +183,11 @@ public class MapEngine {
   public List<String> continentPath(List<String> path) {
     List<String> continentPath = new ArrayList<>();
     for (String country : path) {
-      continentPath.add(countryMap.get(country).getCountryContinent());
+      if (continentPath.contains(countryMap.get(country).getCountryContinent())) {
+        continue;
+      } else {
+        continentPath.add(countryMap.get(country).getCountryContinent());
+      }
     }
     return continentPath;
   }
